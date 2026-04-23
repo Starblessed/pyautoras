@@ -2,6 +2,8 @@ from win32com import client
 import pythoncom
 from exceptions import InvalidVersionException
 
+from typing import Any
+
 class RasController:
     
     def __init__(self, version: str='7.0') -> None:
@@ -39,6 +41,13 @@ class RasController:
         
     def __repr__(self):
         return f"RAS Controller for HEC-RAS v{self._version}\nMethods: {dir(self)}"
+    
+    def open_project(self, project_path: str) -> Any:
+        try:
+            return self._controller.Project_Open(project_path)
+        except Exception as e:
+            print(e)
+            raise(e)
 
 if __name__ == "__main__":
     
@@ -47,4 +56,14 @@ if __name__ == "__main__":
     
     # Shows the object's string representation
     print(rc)
+    
+    # Opens a project
+    proj_path = r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo\Botafogo.prj'
+    proj = rc.open_project(proj_path)
+    
+    # Shows the project's string representation
+    print(proj)
+    print(type(proj))
+    
+    
     
