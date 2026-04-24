@@ -36,6 +36,7 @@ class UnsteadyFlowConfig(FlowConfig):
                     prec_nlines = math.ceil(prec_length / 10)
                     break
         
+        lines[prec_line] = f"Precipitation Hydrograph= {len(values)}\n"
         lines[prec_line + 1:prec_line + prec_nlines + 1] = format_precipitation(values=values)
         
         with open(self.filepath, 'w') as f:
@@ -46,7 +47,7 @@ class UnsteadyFlowConfig(FlowConfig):
 
 
 if __name__ == "__main__":
-    ru = [random.random()*3 for _ in range(192)]
+    ru = [random.random()*3 for _ in range(321)]
     u = UnsteadyFlowConfig(r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo\Botafogo copy.u02')
     
     u.set_precipitation(ru)
