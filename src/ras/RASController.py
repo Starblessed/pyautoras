@@ -1,6 +1,6 @@
 from win32com import client
 import pythoncom
-from exceptions import InvalidVersionException
+from src.ras.exceptions import InvalidVersionException
 
 from typing import Any
 
