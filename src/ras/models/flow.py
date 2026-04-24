@@ -1,6 +1,10 @@
 import math
 import random
 
+from typing import Literal
+
+from src.io.file import ConfigFile
+
 def format_precipitation(values: list[float]):
     prec_strs = []
     
@@ -13,10 +17,10 @@ def format_precipitation(values: list[float]):
         
     return ["".join(prec_strs[n:min(n+10, len(prec_strs))]) + "\n" for n in range(0, len(prec_strs), 10)]
 
-class FlowConfig:
+class FlowConfig(ConfigFile):
     def __init__(self, filepath: str):
         self.filepath = filepath
-        
+        super().__init__(filepath)
 
 class UnsteadyFlowConfig(FlowConfig):
     def __init__(self, filepath: str):
@@ -26,28 +30,35 @@ class UnsteadyFlowConfig(FlowConfig):
         prec_line = 0
         prec_length = 0
         prec_nlines = 0
-        with open(self.filepath, 'r') as f:
-            lines = f.readlines()
-            
-            for i, line in enumerate(lines):
-                if "Precipitation Hydrograph=" in line:
-                    prec_length = int(line.strip().split('=')[1])
-                    prec_line = i
-                    prec_nlines = math.ceil(prec_length / 10)
-                    break
+        prec_length, prec_line = self._get_attribute('Precipitation Hydrograph')
         
-        lines[prec_line] = f"Precipitation Hydrograph= {len(values)}\n"
-        lines[prec_line + 1:prec_line + prec_nlines + 1] = format_precipitation(values=values)
+        prec_nlines = math.ceil(int(prec_length) / 10)
         
-        with open(self.filepath, 'w') as f:
-            f.writelines(lines)
+        self._set_attribute('Precipitation Hydrograph', len(values), prec_line)
+        
+        # Manually add the other lines
+        self._lines[prec_line + 1:prec_line + prec_nlines + 1] = format_precipitation(values=values)
+
             
-            
-            
+    def set_interval(self, value: int, unit: Literal['s', 'm', 'h']='s'):
+        match unit:
+            case 's':
+                interval_str = f"{value}SEC"
+            case 'm':
+                interval_str = f"{value}MIN"
+            case 'h':
+                interval_str = f"{value}HOUR"
+            case _:
+                raise(ValueError(f"{unit} is not a valid unit! Try: s | m | h"))
+        
+        self._set_attribute("Interval", interval_str)
 
 
 if __name__ == "__main__":
-    ru = [random.random()*3 for _ in range(321)]
+    ru = [random.random()*3 for _ in range(192)]
     u = UnsteadyFlowConfig(r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo\Botafogo copy.u02')
     
     u.set_precipitation(ru)
+    u.set_interval(30, 'm')
+    
+    u._save()

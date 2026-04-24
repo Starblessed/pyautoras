@@ -1,5 +1,6 @@
 from src.ras.RASController import RasController
 from src.io.output import FloodOutput
+from src.ras.models.flow import UnsteadyFlowConfig
 import datetime
 
 def main():
@@ -24,6 +25,7 @@ def main():
     print(f'[{datetime.datetime.now()}] [OK] Plan Selected')
 
     # TODO: Edit flow file
+    uf = UnsteadyFlowConfig(filepath=r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo\Botafogo copy.u02')
     
     
     # TODO: Run plan
