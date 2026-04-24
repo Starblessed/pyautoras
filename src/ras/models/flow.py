@@ -1,9 +1,11 @@
 import math
 import random
+import os
 
 from typing import Literal
 
 from src.io.file import ConfigFile
+from src.ras.exceptions import NotAFlowException
 
 def format_precipitation(values: list[float]):
     prec_strs = []
@@ -18,13 +20,14 @@ def format_precipitation(values: list[float]):
     return ["".join(prec_strs[n:min(n+10, len(prec_strs))]) + "\n" for n in range(0, len(prec_strs), 10)]
 
 class FlowConfig(ConfigFile):
-    def __init__(self, filepath: str):
-        self.filepath = filepath
-        super().__init__(filepath)
+    def __init__(self, filepath: str, type_id: str | None=None):
+        if not os.path.splitext(filepath)[1].startswith(".u"):
+            raise NotAFlowException("Provided filepath does not resolve to a HEC-RAS flow file!")
+        super().__init__(filepath, type_id=type_id)
 
 class UnsteadyFlowConfig(FlowConfig):
     def __init__(self, filepath: str):
-        super().__init__(filepath)
+        super().__init__(filepath, type_id='u')
         
     def set_precipitation(self, values: list[float]):
         prec_line = 0
@@ -61,4 +64,4 @@ if __name__ == "__main__":
     u.set_precipitation(ru)
     u.set_interval(30, 'm')
     
-    u._save()
+    u.save_asnew(3)
