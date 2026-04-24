@@ -42,12 +42,22 @@ class RasController:
     def __repr__(self):
         return f"RAS Controller for HEC-RAS v{self._version}\nMethods: {dir(self)}"
     
+    def show_ras(self):
+        self._controller.ShowRas()
+    
     def open_project(self, project_path: str) -> Any:
         try:
             return self._controller.Project_Open(project_path)
         except Exception as e:
             print(e)
             raise(e)
+        
+    def set_current_plan(self, plan_title: str) -> None:
+        try:
+            self._controller.Plan_SetCurrent(plan_title)
+        except Exception as e:
+            print(e)
+            raise(FileNotFoundError(str(e)))
 
 if __name__ == "__main__":
     

@@ -12,13 +12,17 @@ def main():
 
     
     # TODO: Load project
-    rc.open_project(project_path=project_path)
+    proj = rc.open_project(project_path=project_path)
     
     print(f'[{datetime.datetime.now()}] [OK] Project Opened')
     
     # TODO: Select plan
+    plan = rc.set_current_plan("botafogov3")
     
+    rc.show_ras()
     
+    print(f'[{datetime.datetime.now()}] [OK] Plan Selected')
+
     # TODO: Edit flow file
     
     
