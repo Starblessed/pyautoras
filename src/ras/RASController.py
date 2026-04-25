@@ -1,6 +1,8 @@
 from win32com import client
 import pythoncom
-from exceptions import InvalidVersionException
+from src.ras.exceptions import InvalidVersionException
+
+from typing import Any
 
 class RasController:
     
@@ -39,6 +41,62 @@ class RasController:
         
     def __repr__(self):
         return f"RAS Controller for HEC-RAS v{self._version}\nMethods: {dir(self)}"
+    
+    def show_ras(self):
+        self._controller.ShowRas()
+    
+    def open_project(self, project_path: str) -> Any:
+        try:
+            return self._controller.Project_Open(project_path)
+        except Exception as e:
+            print(e)
+            raise(e)
+        
+    def close_project(self):
+        try:
+            self._controller.Project_Close()
+        except Exception as e:
+            print(e)
+            raise(e)
+        
+    def compute_current_plan(self, blocking=True):
+        result = self._controller.Compute_CurrentPlan(None, None, blocking)
+
+        if isinstance(result, tuple):
+            success = bool(result[0])
+            n_messages = result[1] if len(result) > 1 else None
+            messages = result[2] if len(result) > 2 else ""
+        else:
+            success = bool(result)
+            n_messages = None
+            messages = ""
+
+        if not success:
+            raise RuntimeError(messages or "HEC-RAS Compute_CurrentPlan failed")
+
+        return {
+            "success": success,
+            "n_messages": n_messages,
+            "messages": messages,
+        }
+        
+    def close(self) -> None:
+        try:
+            self._controller.QuitRas()
+        except Exception as e:
+            print(e)
+            raise(e)
+        
+    def terminate(self) -> int:
+        code = 0
+        try:
+            self.close_project()
+        except Exception as e:
+            print(e)
+            code = -1
+        finally:
+            self.close()
+        return code
 
 if __name__ == "__main__":
     
@@ -47,4 +105,19 @@ if __name__ == "__main__":
     
     # Shows the object's string representation
     print(rc)
+    
+    # Opens a project
+    proj_path = r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo\Botafogo.prj'
+    proj = rc.open_project(proj_path)
+    
+    # Shows the project's string representation
+    print(proj)
+    print(type(proj))
+    
+    rc.show_ras()
+    
+    rc.close_project()
+    rc.close()
+    
+    
     
