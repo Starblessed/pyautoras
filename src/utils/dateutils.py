@@ -17,6 +17,7 @@ def hec_ras_format_date(dt: datetime.datetime, mode: str='ms', sep: str=" ") -> 
         str: Formatted HEC-RAS standard datetime string.
     """
     date_format = None
+    dt = round_to_5min(dt=dt)
     match mode:
         case 'ms':
             date_format = dt.strftime(HEC_RAS_DATE_FORMAT_MS)
@@ -28,9 +29,18 @@ def hec_ras_format_date(dt: datetime.datetime, mode: str='ms', sep: str=" ") -> 
             raise(ValueError(f"\"{mode}\" is not a valid formatting mode!"))
 
     return sep.join(date_format.lower().split(" "))
+
+def round_to_5min(dt):
+
+    seconds = (dt - dt.min).seconds
+
+    rounding = (seconds + 150) // 300 * 300
+    return dt + datetime.timedelta(0, rounding - seconds, -dt.microsecond)
     
 if __name__ == "__main__":
     now = datetime.datetime.now()
     
     print(hec_ras_format_date(now, mode='hm', sep=','))
+    
+    print(round_to_5min(now))
     
