@@ -58,7 +58,10 @@ class RasController:
         except Exception as e:
             print(e)
             raise(e)
-        
+    
+    def create_session_id(self, task_id: str) -> str:
+        return f"session:{task_id}"
+
     def compute_current_plan(self, blocking=True):
         result = self._controller.Compute_CurrentPlan(None, None, blocking)
 
