@@ -1,0 +1,1 @@
+# TODO: Session Class for managing io within an isolated process
