@@ -1,4 +1,4 @@
-from worker.celery_app import celery_app
+from src.worker.celery_app import celery_app
 from src.ras.RASController import RasController
 import time
 import redis

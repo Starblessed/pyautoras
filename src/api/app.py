@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from celery.result import AsyncResult
-from worker.tasks import create_session, logout_session
+from src.worker.celery_app import create_session, logout_session
 
 app = FastAPI(title="AutoRAS API")
 
@@ -10,7 +10,7 @@ def get_health():
 
 @app.post("/create")
 def create_ras():
-    task = create_session.delay() 
+    task = create_session.delay() # type: ignore
     return {"task_id": task.id}   
 
 @app.get("/{task_id}/status")
@@ -23,5 +23,5 @@ def get_status(task_id: str):
 
 @app.post("/{task_id}/close")
 def close_ras(task_id: str):
-    logout_session.delay(task_id)
+    logout_session.delay(task_id) # type: ignore
     return {"message": f"Logout signal sent for task {task_id}"}
