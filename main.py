@@ -2,7 +2,7 @@ from src.ras.RASController import RasController
 from src.io.output import FloodOutput
 from src.ras.models.flow import UnsteadyFlowConfig
 from src.ras.models.plan import PlanConfig
-from src.ras.models.project import ProjectConfig, ProjectManager
+from src.ras.models.project import ProjectConfig, ProjectManager, create_project_from_folder
 
 import datetime
 import random
@@ -25,6 +25,11 @@ def main():
     SYNTHETIC_PLUVIO_SCALING_FACTOR = 3
     
     PROJECT_FOLDER = r'C:\Users\danma\OneDrive\Documentos\Projetos\pyautoras\.devfiles\models\Botafogo'
+    
+    
+    # ---------- Create Project
+    
+    PROJECT_FOLDER = create_project_from_folder(PROJECT_FOLDER)
     
     # ---------- Initialize RAS Controller
     ras_version = '7.0'

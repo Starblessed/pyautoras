@@ -1,6 +1,8 @@
 import h5py
 import json
 import numpy as np
+import time
+import datetime
 
 def print_hdf5_tree(h5_file, tree=[]):
     k = h5_file.keys()
@@ -41,6 +43,9 @@ class FloodOutput(HDF5Output):
             json.dump(json_obj, f, indent=4)
         
         print(f"Results saved to {save_path}")
+    
+    def get_water_surface(self, timestamp: float, coords):
+        pass
         
         
     

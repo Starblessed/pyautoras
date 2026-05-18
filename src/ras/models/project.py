@@ -6,6 +6,10 @@ import os
 from os.path import splitext
 from datetime import datetime, timedelta
 
+import shutil
+from pathlib import Path
+import json
+
 
 
 class ProjectConfig(ConfigFile):
@@ -18,9 +22,11 @@ class ProjectConfig(ConfigFile):
 
 class ProjectManager:
     def __init__(self, project_config: ProjectConfig | None=None):
+        if project_config is not None: assert os.path.exists(project_config.filepath), f"Project filepath {project_config.filepath} does not exist!"
         self.current_project = project_config
         
     def change_project(self, project_config: ProjectConfig):
+        assert os.path.exists(project_config.filepath), f"Project filepath {project_config.filepath} does not exist!"
         self.current_project = project_config
 
     def add_unsteady_file(self, filepath: str) -> None:
@@ -67,3 +73,37 @@ class ProjectManager:
         
         self.current_project._set_attribute("Current Plan", plan_id)
         self.current_project.save_changes()
+
+def create_project_from_folder(origin_path: str, dest_path: str="projects") -> str:
+    dest_folder = os.path.join(dest_path, os.path.basename(origin_path))
+    os.makedirs(dest_path, exist_ok=True)
+    n = 0 
+    while os.path.exists(dest_folder):
+        n += 1
+        if n == 1: print("Specified path already exists, creating new indexed project.")
+        
+        dest_folder = os.path.join(dest_path, os.path.basename(origin_path) + str(n))
+    else:
+        shutil.copytree(origin_path, dest_folder)
+        
+    # TODO Later: Remove Rio de Janeiro hardcoded values
+    make_autoras_file(23, "S", os.path.basename(origin_path) + '.prj', 4674, dest_folder)
+        
+    return os.path.abspath(dest_folder)
+
+def make_autoras_file(utm_zone: int, utm_zone_hemisphere: str, prj_filepath: str, dest_epsg: int, project_folder: str) -> None:
+    assert utm_zone_hemisphere in ["S", "N"], f"Invalid hemisphere {utm_zone_hemisphere}"
+    epsg_hemisphere = 326 if utm_zone_hemisphere == "N" else 327
+    obj = {
+        "prj_filepath": prj_filepath,
+        "utm_zone": utm_zone,
+        "utm_zone_hemisphere": utm_zone_hemisphere,
+        "project_epsg": f"epsg:{epsg_hemisphere}{utm_zone:02d}",
+        "dest_epsg": f"epsg:{dest_epsg}"
+    }
+    
+    with open(os.path.join(project_folder, "autoras.json"), 'w', encoding="utf8") as jf:
+        json_str = json.dumps(obj=obj, indent=4)
+        
+        jf.write(json_str)
+        
