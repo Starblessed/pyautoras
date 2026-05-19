@@ -20,3 +20,5 @@
     <summary>Cell Cumulative Precipitation Depth</summary>
 	Results/Unsteady/Unsteady Time Series/Perimeter 1/Cell Cumulative Precipitation Depth
 	</details>
+- Parsing with h5py
+- Exposing via FastAPI and GTFS

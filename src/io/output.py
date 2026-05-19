@@ -4,6 +4,8 @@ import numpy as np
 import time
 import datetime
 
+import os
+
 def print_hdf5_tree(h5_file, tree=[]):
     k = h5_file.keys()
     for key in k:
@@ -26,7 +28,7 @@ class FloodOutput(HDF5Output):
         self.precipitation: np.ndarray = self.file["/Results/Unsteady/Output/Output Blocks/Base Output/Unsteady Time Series/2D Flow Areas/Perimeter 1/Cell Cumulative Precipitation Depth"][:] # type: ignore
         self.water_surface: np.ndarray = self.file["/Results/Unsteady/Output/Output Blocks/Base Output/Unsteady Time Series/2D Flow Areas/Perimeter 1/Water Surface"][:] # type: ignore
         self.timestamps: np.ndarray = self.file["/Results/Unsteady/Output/Output Blocks/Base Output/Unsteady Time Series/Time Date Stamp (ms)"][:] # type: ignore
-    def to_json(self, save_path: str) -> None:
+    def save_json(self, save_path: str) -> None:
         """Saves the output to JSON format.
 
         Args:
@@ -44,9 +46,27 @@ class FloodOutput(HDF5Output):
         
         print(f"Results saved to {save_path}")
     
+    def to_dict(self) -> dict:
+        """Returns the output in dict format."""
+        json_obj = {
+            "project_filepath": self.filepath,
+            "coordinates": self.coordinates,
+            "precipitation": self.precipitation,
+            "water_surface": self.water_surface
+        }
+        
+        return json_obj
+    
     def get_water_surface(self, timestamp: float, coords):
         pass
         
+
+def get_output_from_plan(project_path: str, project_name: str, plan_number: int) -> FloodOutput:
+    res_file = os.path.join(project_path, project_name + f".p{plan_number:02d}" + f".hdf")
+    
+    assert os.path.exists(res_file), f"No output available for plan {project_name}.p{plan_number:02d}!"
+    
+    return FloodOutput(filepath=res_file)
         
     
 if __name__ == "__main__":

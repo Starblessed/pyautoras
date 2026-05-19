@@ -1,5 +1,5 @@
 from src.ras.RASController import RasController
-from src.io.output import FloodOutput
+from src.io.output import FloodOutput, get_output_from_plan
 from src.ras.models.flow import UnsteadyFlowConfig
 from src.ras.models.plan import PlanConfig
 from src.ras.models.project import ProjectConfig, ProjectManager, create_project_from_folder
@@ -7,6 +7,7 @@ from src.ras.models.project import ProjectConfig, ProjectManager, create_project
 import datetime
 import random
 from os.path import splitext, join
+import numpy as np
 
 def main():
     
@@ -96,7 +97,10 @@ def main():
 
 
         # ---------- Extract results
-        print(result)
+        res = get_output_from_plan(PROJECT_FOLDER, "Botafogo", 4).to_dict()
+        
+        for key, value in res.items():
+            print(f"ShapeOf {key} = {np.shape(value)} --------")
         
         print(f'[{datetime.datetime.now()}] [OK] Results extracted')
     
