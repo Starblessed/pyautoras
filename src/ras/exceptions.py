@@ -21,3 +21,4 @@ class NotAFlowException(ConfigFileException):
     
 class NotAProjectException(ConfigFileException):
     """"Exception raised when the provided filepath for a plan does not follow the project extension convention."""
+    

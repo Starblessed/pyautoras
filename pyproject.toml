@@ -5,7 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "celery[redis]>=5.6.3",
+    "fastapi[standard]>=0.136.3",
+    "gtfs-realtime-bindings>=2.0.0",
     "h5py>=3.16.0",
+    "pandas>=3.0.3",
+    "pyarrow>=24.0.0",
+    "pyproj>=3.7.2",
     "pytest>=9.0.3",
     "pywin32>=311",
+    "requests>=2.34.2",
+    "types-protobuf>=7.34.1.20260518",
 ]
