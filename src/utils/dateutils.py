@@ -4,6 +4,8 @@ HEC_RAS_DATE_FORMAT_MS="%d%b%Y %H:%M:%S:%f" # Hour Minute Second Millisseconds
 HEC_RAS_DATE_FORMAT_S="%d%b%Y %H:%M:%S" # Hour Minute Second Millisseconds
 HEC_RAS_DATE_FORMAT_HM="%d%b%Y %H:%M" # Hour Minute 
 
+HEC_RAS_OUTPUT_DATE_FORMAT="%Y-%m-%dT%H:%M:%S"
+
 
 def hec_ras_format_date(dt: datetime.datetime, mode: str='ms', sep: str=" ") -> str:
     """Formats datetime objects to standard HEC-RAS format.
@@ -29,6 +31,14 @@ def hec_ras_format_date(dt: datetime.datetime, mode: str='ms', sep: str=" ") -> 
             raise(ValueError(f"\"{mode}\" is not a valid formatting mode!"))
 
     return sep.join(date_format.lower().split(" "))
+
+
+
+def hec_ras_string_to_datetime(datetime_str: str) -> datetime.datetime:
+    return datetime.datetime.strptime(datetime_str, HEC_RAS_DATE_FORMAT_MS)
+
+def hec_ras_output_string_to_datetime(datetime_str) -> datetime.datetime:
+    return hec_ras_string_to_datetime(datetime_str.decode("utf-8"))
 
 def round_to_5min(dt):
 

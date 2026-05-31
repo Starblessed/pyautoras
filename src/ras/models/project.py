@@ -98,8 +98,8 @@ def make_autoras_file(utm_zone: int, utm_zone_hemisphere: str, prj_filepath: str
         "prj_filepath": prj_filepath,
         "utm_zone": utm_zone,
         "utm_zone_hemisphere": utm_zone_hemisphere,
-        "project_epsg": f"epsg:{epsg_hemisphere}{utm_zone:02d}",
-        "dest_epsg": f"epsg:{dest_epsg}"
+        "project_epsg": f"epsg:{epsg_hemisphere}{utm_zone:02d}".upper(),
+        "dest_epsg": f"epsg:{dest_epsg}".upper()
     }
     
     with open(os.path.join(project_folder, "autoras.json"), 'w', encoding="utf8") as jf:

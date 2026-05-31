@@ -1,4 +1,4 @@
-## HDF5 Plan Output Parsing and Exposing
+## HDF5 Plan Output Parsing
 
 05/17/2026
 
@@ -21,4 +21,18 @@
 	Results/Unsteady/Unsteady Time Series/Perimeter 1/Cell Cumulative Precipitation Depth
 	</details>
 - Parsing with h5py
+
+## Alert Emission GTFS-rt
+
+05/27/2026
+
+### Steps
+- Perform simulation via API call
+- Generate alerts as dict list
+- Group alerts that are too close
+- For each alert check if lat lon are within a buffer of 50m each route
+- Based on criticity, calculate n of affected stops
+- Get n closest stops
+- Determine number of affected passengers using formula
+- Build feedmessage
 - Exposing via FastAPI and GTFS
